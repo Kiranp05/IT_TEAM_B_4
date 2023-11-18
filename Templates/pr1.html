@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Predictions</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Future Predictions</h1>
+
+    <form id="prediction-form">
+        <label for="state">Select a State:</label>
+        <select name="state" id="state">
+            <option value="Karnataka">Karnataka</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Goa">Goa</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Kerala">Kerala</option>
+        </select>
+        <button type="button" onclick="getPredictions()">Get Predictions</button>
+    </form>
+
+    <div id="predictions-container">
+        {% if predictions %}
+           
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>State</th>
+                        <th>Predicted Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prediction in predictions %}
+                        <tr>
+                            <td>{{ prediction['Date'] }}</td>
+                            <td>{{ prediction['State'] }}</td>
+                            <td>{{ prediction['Predicted_Price'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    <script>
+        function getPredictions() {
+            var selectedState = $('#state').val();
+
+            // Send an AJAX request to the server to get predictions for the selected state
+            $.ajax({
+                type: 'POST',
+                url: '/predict',
+                data: { state: selectedState },
+                success: function(data) {
+                    // Update the predictions container with the received data
+                    $('#predictions-container').html(data);
+                    $('#selected-state').text(selectedState);
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
